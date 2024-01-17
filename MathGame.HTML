@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<script>
+// HTML CODE & CSS CODE LICENSE - LESSER GENERAL PUBLIC LICENSE (LGPL) WITH CREDIT DISCLAIMER
+// 
+// Version 1.0, [Date]
+// 
+// Preamble:
+// 
+// This License applies to any original work of authorship (the "Code") whose owner has placed the Code under the terms of this License. The HTML & CSS Code is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Code or the use or other dealings in the Code.
+// 
+// Definitions:
+// 
+// 1. "Code" refers to the HTML & CSS code distributed under this License.
+// 2. "Derivative Works" means any work, whether in source or object form, that is based on (or derived from) the Code.
+// 3. "Modification" means any change to the Code, including but not limited to adding, deleting, or modifying the content.
+// 
+// Grant of License:
+// 
+// Subject to the terms and conditions of this License, the authors hereby grant you a worldwide, royalty-free, non-exclusive, sublicensable license to do the following:
+// 
+// 1. Copy and distribute the Code, along with a copy of this License.
+// 2. Create and distribute Derivative Works.
+// 
+// Conditions:
+// 
+// 1. If you modify the Code, you must prominently display notices stating that you have modified the Code, the date of modification, and identify the modifications.
+// 
+// 2. The Code may only be distributed under the terms of this License or a future version of this License released by the authors.
+// 
+// 3. Any Derivative Works must be distributed under the terms of this License or a future version of this License released by the authors.
+// 
+// Credit Disclaimer:
+// 
+// If you use the Code or any portion thereof in another project, you must provide appropriate attribution to the original creator(s) by including a notice in your project's documentation or user interface, as reasonably appropriate under the circumstances.
+// 
+// Compatibility:
+// 
+// The Code can be included in larger works that are not covered by this License, and the whole work may be distributed under different terms, provided that the Code or portions thereof remain subject to this License.
+// 
+// Termination:
+// 
+// This License and the rights granted hereunder will terminate automatically if you fail to comply with the terms herein and fail to cure such breach within 30 days of becoming aware of the breach.
+// 
+// Disclaimer:
+// 
+// THE CODE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
+// 
+</script>
+
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Math Game</h1>
+    <div id="game-container">
+        <div id="game-content">
+            <p id="round"></p>
+            <p id="question"></p>
+            <label for="answer">Your answer: </label>
+            <input type="text" id="answer" onkeypress="handleKeyPress(event)" />
+            <button onclick="checkAnswer()">Submit Answer</button>
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let round = 0;
+        let incorrectAnswers = [];
+        let currentQuestion = null;
+        // Math Code
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const operator = Math.random() < 0.5 ? '+' : '*';
+            currentQuestion = `${num1} ${operator} ${num2}`;
+            return currentQuestion;
+        }
+        // Insert all of the info.
+       function updateUI() {
+            const roundElement = document.getElementById('round');
+            const questionElement = document.getElementById('question');
+            // Round, Question, Answer and Result elements.
+            if (roundElement && questionElement) {
+                roundElement.innerText = `Round ${round + 1}`;
+                questionElement.innerText = `Question: ${generateQuestion()}`;
+                document.getElementById('answer').value = '';
+                document.getElementById('result').innerText = '';
+            }
+        }
+        // Function which retrieves the answer given by the user.
+        function getAnswer() {
+            return parseInt(document.getElementById('answer').value, 10);
+        }
+        // Function which checks the given answer by the user.
+        function checkAnswer() {
+            const correctAnswer = eval(currentQuestion);
+            const userAnswer = getAnswer();
+            // Checking if the answer given by the user is correct, if not, crash web page.
+            if (!isNaN(userAnswer)) {
+                if (userAnswer === correctAnswer) {
+                    document.getElementById('result').innerText = 'Correct!';
+                    score += 1;
+                } else {
+                    document.getElementById('result').innerText = `Wrong! The correct answer was: ${correctAnswer}`;
+                    incorrectAnswers.push({ question: currentQuestion, correctAnswer });
+                }
+                // Round Adding (change if (round < 20) to change the amount of rounds)
+                round += 1;
+                if (round < 20) {
+                    updateUI();
+                } else {
+                    endGame();
+                }
+            } else {
+                alert('Enter a valid number.');
+            }
+        }
+        // End of the game, change if needed
+        function endGame() {
+            const gameContent = document.getElementById('game-content');
+            gameContent.innerHTML = `<p><strong>Game finished! Final score is: ${score}/20</strong></p>`;
+
+            if (incorrectAnswers.length > 0) {
+                gameContent.innerHTML += '<h2><strong>Incorrect Answers:</strong></h2>';
+                for (const { question, correctAnswer } of incorrectAnswers) {
+                    gameContent.innerHTML += `<p><strong>${question} - Correct Answer: ${correctAnswer}</strong></p>`;
+                }
+            }
+
+            // Restart button
+            gameContent.innerHTML += '<button onclick="restartGame()">Restart Game</button>';
+        }
+
+            function restartGame() {
+        // "Restart" the game. A.K.A, reload the web page.
+        location.reload();
+        
+
+            // Updating the UI
+            updateUI();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        }
+
+        // Start Game
+        updateUI();
+    </script>
+</body>
+</html>
